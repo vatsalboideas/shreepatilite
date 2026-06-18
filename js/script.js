@@ -1,50 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  initAccordion();
   initMobileMenu();
   initSmoothScroll();
 });
-
-function initAccordion() {
-  const accordion = document.getElementById('services-accordion');
-  if (!accordion) return;
-
-  const items = accordion.querySelectorAll('.accordion-item');
-
-  items.forEach((item, index) => {
-    const header = item.querySelector('.accordion-header');
-    const body = item.querySelector('.accordion-body');
-
-    header.addEventListener('click', () => {
-      const isActive = item.classList.contains('active');
-
-      items.forEach((other) => {
-        other.classList.remove('active');
-        other.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
-        other.querySelector('.accordion-body').style.maxHeight = '0';
-      });
-
-      if (!isActive) {
-        item.classList.add('active');
-        header.setAttribute('aria-expanded', 'true');
-        body.style.maxHeight = body.scrollHeight + 'px';
-      }
-    });
-
-    if (index === 0) {
-      item.classList.add('active');
-      header.setAttribute('aria-expanded', 'true');
-      body.style.maxHeight = body.scrollHeight + 'px';
-    }
-  });
-
-  window.addEventListener('resize', () => {
-    const activeItem = accordion.querySelector('.accordion-item.active');
-    if (activeItem) {
-      const body = activeItem.querySelector('.accordion-body');
-      body.style.maxHeight = body.scrollHeight + 'px';
-    }
-  });
-}
 
 function initMobileMenu() {
   const nav = document.querySelector('.nav');
