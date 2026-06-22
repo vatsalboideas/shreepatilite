@@ -135,16 +135,17 @@ ul {
   z-index: 1;
 }
 
-/* --- Carousel: bottom-right control bar (prev · dots · next) --- */
+/* --- Carousel: centered bottom dot indicators --- */
 
 .hero-carousel-controls {
   position: absolute;
-  right: clamp(1.25rem, 3.5vw, 2.5rem);
+  left: 50%;
   bottom: clamp(1rem, 2.5vw, 1.75rem);
   z-index: 3;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  justify-content: center;
+  transform: translateX(-50%);
 }
 
 .hero-carousel-nav {
@@ -188,24 +189,32 @@ ul {
   stroke-linejoin: round;
 }
 
-/* --- Carousel: progress-bar indicators --- */
+/* --- Carousel: dot indicators --- */
 
 .hero-carousel-indicators {
   display: flex;
-  gap: 0.45rem;
+  gap: clamp(0.4rem, 1.2vw, 0.625rem);
   align-items: center;
+  justify-content: center;
 }
 
 .hero-carousel-indicators button {
-  position: relative;
-  width: clamp(2rem, 5vw, 3rem);
-  height: 2px;
+  width: clamp(0.45rem, 1.2vw, 0.5rem);
+  height: clamp(0.45rem, 1.2vw, 0.5rem);
   padding: 0;
-  border: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
   cursor: pointer;
-  overflow: hidden;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.hero-carousel-indicators button:hover {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(255, 255, 255, 0.85);
 }
 
 .hero-carousel-indicators button:focus-visible {
@@ -213,22 +222,14 @@ ul {
   outline-offset: 3px;
 }
 
-.hero-carousel-indicators button span {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
+.hero-carousel-indicators button.is-active {
   background: #fff;
-  transform: scaleX(0);
-  transform-origin: left center;
+  border-color: #fff;
+  transform: scale(1.15);
 }
 
-.hero-carousel-indicators button.is-active span {
-  animation: carousel-progress 5s linear forwards;
-}
-
-@keyframes carousel-progress {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
+.hero-carousel-indicators button span {
+  display: none;
 }
 
 .nav-links a {
@@ -280,48 +281,65 @@ body.menu-open {
    ========================================================================== */
 
 .about-section {
-  padding-top: clamp(2rem, 4vw, 3.5rem);
+  padding-top: clamp(1.75rem, 4vw, 3.5rem);
   padding-bottom: clamp(3rem, 6vw, 5rem);
 }
 
 .about-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 42%);
-  gap: clamp(2rem, 5vw, 4.5rem);
+  grid-template-columns: minmax(0, 42%) minmax(0, 1fr) ;
+  column-gap: clamp(1.5rem, 4vw, 4rem);
+  row-gap: clamp(0.875rem, 2vw, 1.25rem);
   align-items: start;
 }
 
 .about-title {
-  margin-bottom: clamp(1rem, 2vw, 1.5rem);
-  font-size: clamp(2.5rem, 4vw + 1rem, 4rem);
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #171717;
+}
+
+.about-name {
+  margin-bottom: clamp(0.375rem, 1vw, 0.75rem);
+  font-size: clamp(1.75rem, 4vw, 3rem);
   font-weight: 700;
   line-height: 1.1;
   color: #171717;
 }
 
 .about-subtitle {
-  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
-  font-size: clamp(1rem, 1.2vw + 0.5rem, 1.35rem);
+  margin-bottom: clamp(1rem, 2vw, 1.75rem);
+  font-size: clamp(0.9375rem, 1vw + 0.4rem, 1.2rem);
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.4;
   color: #171717;
 }
 
 .about-body {
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2vw, 1.25rem);
+  gap: clamp(0.875rem, 1.8vw, 1.25rem);
 }
 
 .about-body p {
-  font-size: clamp(0.9375rem, 1vw + 0.5rem, 1.05rem);
+  font-size: clamp(0.875rem, 0.9vw + 0.4rem, 1rem);
   line-height: 1.75;
   color: #262626;
 }
 
+.about-media {
+  align-self: stretch;
+}
+
 .about-photo {
   width: 100%;
-  border-radius: 12px;
+  height: 100%;
+  min-height: clamp(280px, 38vw, 500px);
+  max-height: clamp(400px, 55vw, 650px);
+  border-radius: clamp(10px, 1.5vw, 16px);
   object-fit: cover;
   object-position: center top;
 }
@@ -621,8 +639,30 @@ body.menu-open {
     min-height: clamp(400px, 50vh, 520px);
   }
 
+  .about-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 44%);
+    column-gap: clamp(1.25rem, 3vw, 2.5rem);
+  }
+
   .service-card-inner {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  }
+}
+
+
+/* ==========================================================================
+   Responsive — Tablet small (≤860px)
+   ========================================================================== */
+
+@media (max-width: 860px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 46%);
+    column-gap: clamp(1rem, 2.5vw, 2rem);
+  }
+
+  .about-photo {
+    min-height: clamp(240px, 40vw, 420px);
+    max-height: clamp(320px, 48vw, 520px);
   }
 }
 
@@ -634,14 +674,30 @@ body.menu-open {
 @media (max-width: 768px) {
   .about-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    column-gap: 0;
+    row-gap: clamp(0.875rem, 3vw, 1.25rem);
   }
 
   .about-media {
-    order: -1;
-    max-width: 420px;
+    align-self: auto;
+    max-width: min(420px, 80%);
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .about-photo {
+    min-height: clamp(220px, 50vw, 340px);
+    max-height: clamp(260px, 55vw, 380px);
+    border-radius: clamp(10px, 2.5vw, 14px);
+  }
+
+  .about-name {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+
+  .about-subtitle {
+    font-size: clamp(0.875rem, 3.5vw, 1rem);
+    margin-bottom: 0.875rem;
   }
 
   .hero-nav-wrap {
@@ -736,6 +792,25 @@ body.menu-open {
    ========================================================================== */
 
 @media (max-width: 480px) {
+  .about-media {
+    max-width: 100%;
+  }
+
+  .about-photo {
+    min-height: clamp(200px, 52vw, 280px);
+    max-height: clamp(220px, 56vw, 300px);
+    border-radius: 10px;
+  }
+
+  .about-name {
+    font-size: clamp(1.375rem, 7vw, 1.75rem);
+  }
+
+  .about-section {
+    padding-top: 1.25rem;
+    padding-bottom: 2.5rem;
+  }
+
   .different-grid {
     gap: 1.25rem 0.75rem;
     margin-left: 0;
@@ -837,7 +912,7 @@ body.menu-open {
   .blog-card,
   .hero-carousel-track,
   .hero-carousel-nav,
-  .hero-carousel-indicators button span {
+  .hero-carousel-indicators button {
     transition: none;
     animation: none;
   }
