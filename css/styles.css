@@ -103,6 +103,134 @@ ul {
   margin-top: 0;
 }
 
+/* --- Carousel: image layer --- */
+
+.hero-carousel-bg {
+  isolation: isolate;
+}
+
+.hero-carousel-track {
+  display: flex;
+  width: 300%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.hero-carousel-slide {
+  flex: 0 0 33.333333%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hero-carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-overlay {
+  z-index: 1;
+}
+
+/* --- Carousel: bottom-right control bar (prev · dots · next) --- */
+
+.hero-carousel-controls {
+  position: absolute;
+  right: clamp(1.25rem, 3.5vw, 2.5rem);
+  bottom: clamp(1rem, 2.5vw, 1.75rem);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.hero-carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    background 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
+}
+
+.hero-carousel-nav:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.08);
+}
+
+.hero-carousel-nav:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
+.hero-carousel-nav svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- Carousel: progress-bar indicators --- */
+
+.hero-carousel-indicators {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.hero-carousel-indicators button {
+  position: relative;
+  width: clamp(2rem, 5vw, 3rem);
+  height: 2px;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.hero-carousel-indicators button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
+.hero-carousel-indicators button span {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.hero-carousel-indicators button.is-active span {
+  animation: carousel-progress 5s linear forwards;
+}
+
+@keyframes carousel-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
 .nav-links a {
   display: inline-block;
   padding: 0.25rem 0;
@@ -536,7 +664,7 @@ body.menu-open {
     border-radius: inherit;
   }
 
-  .hero-panel > div:first-child > div:last-child {
+  .hero-overlay {
     border-radius: inherit;
   }
 
@@ -706,8 +834,12 @@ body.menu-open {
   }
 
   .btn-primary,
-  .blog-card {
+  .blog-card,
+  .hero-carousel-track,
+  .hero-carousel-nav,
+  .hero-carousel-indicators button span {
     transition: none;
+    animation: none;
   }
 
   .service-card-wrapper {

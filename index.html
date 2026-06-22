@@ -65,13 +65,36 @@
     <!-- Hero -->
     <section id="about" class="hero-shell relative z-1 mx-auto w-[min(calc(100%-24px),80rem)] max-w-7xl sm:w-[min(calc(100%-32px),80rem)] lg:w-[min(calc(100%-48px),80rem)]">
       <div class="hero-panel relative flex min-h-[480px] items-end overflow-hidden rounded-hero sm:min-h-[520px] lg:min-h-[560px]">
-        <div class="absolute inset-0 overflow-hidden rounded-hero bg-linear-to-br from-[#0a1628] via-[#1a3a5c] to-[#0d2137]">
-          <img src="assets/images/hero.png" alt="Futuristic oncology platform with DNA visualization" class="h-full w-full object-cover object-center">
-          <div class="absolute inset-0 rounded-hero bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div class="hero-carousel-bg absolute inset-0 overflow-hidden rounded-hero bg-linear-to-br from-[#0a1628] via-[#1a3a5c] to-[#0d2137]" aria-roledescription="carousel" aria-label="Hero image carousel">
+          <div class="hero-carousel-track">
+            <div class="hero-carousel-slide is-active">
+              <img src="assets/images/hero.png" alt="Futuristic oncology platform with DNA visualization">
+            </div>
+            <div class="hero-carousel-slide" aria-hidden="true">
+              <img src="assets/images/hero.png" alt="">
+            </div>
+            <div class="hero-carousel-slide" aria-hidden="true">
+              <img src="assets/images/hero.png" alt="">
+            </div>
+          </div>
+          <div class="hero-overlay absolute inset-0 rounded-hero bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
         </div>
         <div class="relative z-1 w-full p-6 pb-8 text-left sm:p-[clamp(28px,4vw,48px)] sm:pb-[clamp(32px,4.5vw,60px)] lg:p-[clamp(32px,4.5vw,65px)] lg:pb-[clamp(36px,5vw,72px)]">
           <h1 class="mb-3 max-w-[720px] text-[clamp(1.5rem,4.5vw,2.65rem)] leading-[1.2] font-bold tracking-tight text-white sm:mb-4 sm:leading-[1.15] lg:mb-5">Building the Future of Personalized Patient Care and Preventive Oncology</h1>
           <p class="max-w-[640px] text-[clamp(0.875rem,2vw,1.05rem)] leading-relaxed text-white/90">AI-driven cancer screening, precision diagnostics, genomics, nutraceuticals, home care, and personalized oncology solutions under one integrated healthcare ecosystem.</p>
+        </div>
+        <div class="hero-carousel-controls">
+          <button class="hero-carousel-nav" type="button" data-hero-carousel-prev aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="hero-carousel-indicators" role="tablist" aria-label="Carousel slides">
+            <button class="is-active" type="button" role="tab" data-hero-carousel-indicator="0" aria-label="Slide 1" aria-selected="true"><span></span></button>
+            <button type="button" role="tab" data-hero-carousel-indicator="1" aria-label="Slide 2" aria-selected="false"><span></span></button>
+            <button type="button" role="tab" data-hero-carousel-indicator="2" aria-label="Slide 3" aria-selected="false"><span></span></button>
+          </div>
+          <button class="hero-carousel-nav" type="button" data-hero-carousel-next aria-label="Next slide">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>
+          </button>
         </div>
       </div>
     </section>

@@ -43,6 +43,75 @@ function getLinkPage(href) {
 
 
 /* ==========================================================================
+   Hero Carousel
+   ========================================================================== */
+
+function initHeroCarousel() {
+  const carousel = document.querySelector('.hero-carousel-bg');
+  if (!carousel) return;
+
+  const heroPanel = carousel.closest('.hero-panel');
+  const track = carousel.querySelector('.hero-carousel-track');
+  const slides = [...carousel.querySelectorAll('.hero-carousel-slide')];
+  const indicators = [...(heroPanel || carousel).querySelectorAll('[data-hero-carousel-indicator]')];
+  const prevBtn = (heroPanel || carousel).querySelector('[data-hero-carousel-prev]');
+  const nextBtn = (heroPanel || carousel).querySelector('[data-hero-carousel-next]');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const AUTOPLAY_DELAY = 5000;
+  let activeIndex = 0;
+  let autoplayTimer;
+
+  if (slides.length <= 1) return;
+
+  function setSlide(index) {
+    activeIndex = (index + slides.length) % slides.length;
+
+    // Slide the track
+    track.style.transform = `translateX(-${activeIndex * 33.333333}%)`;
+
+    // Update aria-hidden on each slide
+    slides.forEach((slide, i) => {
+      slide.setAttribute('aria-hidden', String(i !== activeIndex));
+    });
+
+    // Restart progress-bar fill animation by toggling is-active
+    indicators.forEach((indicator, i) => {
+      const isActive = i === activeIndex;
+      indicator.classList.remove('is-active');
+      if (isActive) {
+        indicator.offsetWidth; // force reflow to restart animation
+        indicator.classList.add('is-active');
+        indicator.setAttribute('aria-selected', 'true');
+      } else {
+        indicator.setAttribute('aria-selected', 'false');
+      }
+    });
+  }
+
+  function startAutoplay() {
+    if (prefersReducedMotion) return;
+    clearInterval(autoplayTimer);
+    autoplayTimer = setInterval(() => setSlide(activeIndex + 1), AUTOPLAY_DELAY);
+  }
+
+  function goToSlide(index) {
+    setSlide(index);
+    startAutoplay();
+  }
+
+  prevBtn?.addEventListener('click', () => goToSlide(activeIndex - 1));
+  nextBtn?.addEventListener('click', () => goToSlide(activeIndex + 1));
+
+  indicators.forEach((indicator, i) => {
+    indicator.addEventListener('click', () => goToSlide(i));
+  });
+
+  setSlide(0);
+  startAutoplay();
+}
+
+
+/* ==========================================================================
    Mobile Menu
    ========================================================================== */
 
@@ -452,6 +521,7 @@ function initServicesStackAnimation() {
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initHeroCarousel();
   initMobileMenu();
   initSmoothScroll();
   initNavHighlighting();
