@@ -453,13 +453,23 @@ body.menu-open {
 .blog-card {
   border-radius: clamp(14px, 2vw, 20px);
   background: linear-gradient(180deg, #FFE2CB 0%, #B5946E 100%);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.blog-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+.blog-card-thumb img,
+.blog-card-featured-media img {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .blog-card:hover {
+    transform: translateY(-8px);
+  }
+
+  .blog-card:hover .blog-card-thumb img,
+  .blog-card:hover .blog-card-featured-media img {
+    transform: scale(1.04);
+  }
 }
 
 .blog-card-thumb {
@@ -755,11 +765,6 @@ body.menu-open {
 
   .blog-card--wide .blog-card-featured-media {
     min-height: clamp(160px, 42vw, 200px);
-  }
-
-  .blog-card:hover {
-    transform: none;
-    box-shadow: none;
   }
 
   .products-banner-overlay {
