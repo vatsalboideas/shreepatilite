@@ -10,6 +10,9 @@ let servicesScrollTriggers = [];
 /** Debounce timer for rebuilding services animations after viewport changes. */
 let servicesResizeTimer;
 
+/** Lenis smooth-scroll instance (null when disabled or unavailable). */
+let lenis = null;
+
 /* ==========================================================================
    Shared Utilities
    ========================================================================== */
@@ -124,6 +127,7 @@ function initMobileMenu() {
     menuBtn.classList.remove('open');
     menuBtn.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('menu-open');
+    lenis?.start();
   };
 
   menuBtn.addEventListener('click', () => {
@@ -131,6 +135,10 @@ function initMobileMenu() {
     menuBtn.classList.toggle('open', isOpen);
     menuBtn.setAttribute('aria-expanded', String(isOpen));
     document.body.classList.toggle('menu-open', isOpen);
+    if (lenis) {
+      if (isOpen) lenis.stop();
+      else lenis.start();
+    }
   });
 
   nav.querySelectorAll('.nav-menu a').forEach((link) => {
@@ -144,8 +152,52 @@ function initMobileMenu() {
 }
 
 /* ==========================================================================
-   Smooth Scroll
+   Lenis Smooth Scroll
    ========================================================================== */
+
+function initLenis() {
+  if (typeof Lenis === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  lenis = new Lenis({
+    lerp: 0.1,
+    smoothWheel: true,
+  });
+
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    lenis.on('scroll', ScrollTrigger.update);
+
+    ScrollTrigger.scrollerProxy(document.documentElement, {
+      scrollTop(value) {
+        if (arguments.length) {
+          lenis.scrollTo(value, { immediate: true });
+        }
+        return lenis.scroll;
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      },
+    });
+
+    ScrollTrigger.addEventListener('refresh', () => lenis.resize());
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+  } else {
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  }
+}
 
 function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -158,6 +210,12 @@ function initSmoothScroll() {
 
       e.preventDefault();
       const headerOffset = getStickyHeaderOffset(12);
+
+      if (lenis) {
+        lenis.scrollTo(target, { offset: -headerOffset });
+        return;
+      }
+
       const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
       window.scrollTo({ top, behavior: 'smooth' });
     });
@@ -241,10 +299,10 @@ function initScrollReveal() {
     markReveal(section.querySelector('.about-name'), delay);
     delay += 80;
 
-    const photo = section.querySelector('.about-photo');
-    if (photo) {
-      photo.classList.add('reveal--from-right');
-      markReveal(photo, delay);
+    const photoWrap = section.querySelector('.about-photo-wrap');
+    if (photoWrap) {
+      photoWrap.classList.add('reveal--from-right');
+      markReveal(photoWrap, delay);
     }
     delay += 100;
 
@@ -378,10 +436,15 @@ function killServicesAnimations() {
 
   const stack = document.querySelector('#services .services-stack');
   const cards = document.querySelectorAll('#services .service-card');
+  const wrappers = document.querySelectorAll('#services .service-card-wrapper');
 
   cards.forEach((card) => {
     gsap.killTweensOf(card);
-    gsap.set(card, { clearProps: 'transform' });
+    gsap.set(card, { clearProps: 'transform,zIndex' });
+  });
+
+  wrappers.forEach((wrapper) => {
+    gsap.set(wrapper, { clearProps: 'zIndex' });
   });
 
   if (stack) stack.classList.remove('services-stack--static');
@@ -434,20 +497,22 @@ function setupServicesStack() {
     const scale = isLast ? 1 : 0.9 + 0.025 * i;
     const rotation = isLast ? 0 : -10;
 
+    gsap.set(wrapper, { zIndex: i + 1 });
+    gsap.set(card, { zIndex: i + 1, force3D: true, transformOrigin: 'top center' });
+
     const cardTween = gsap.to(card, {
-      // scale,
-      // rotationX: rotation,
-      transformOrigin: 'top center',
       ease: 'none',
       scrollTrigger: {
         trigger: wrapper,
         start: () => 'top ' + (titlePinTop() + titleSticky.offsetHeight + i * 10),
         end: () => 'bottom ' + getServicesPinEnd(),
         endTrigger: scrollWrapper,
-        scrub: true,
+        scrub: 0.6,
         pin: wrapper,
         pinSpacing: false,
+        pinReparent: true,
         anticipatePin: 1,
+        fastScrollEnd: true,
         invalidateOnRefresh: true,
         id: 'service-' + (i + 1),
       },
@@ -470,6 +535,146 @@ function initServicesStackAnimation() {
 
   window.addEventListener('resize', () => scheduleServicesRefresh(200));
   window.addEventListener('orientationchange', () => scheduleServicesRefresh(300));
+}
+
+/* ==========================================================================
+   Image Parallax
+   ========================================================================== */
+
+/** ScrollTrigger instances for image parallax. */
+let imageParallaxTriggers = [];
+
+function killImageParallax() {
+  imageParallaxTriggers.forEach((st) => st.kill());
+  imageParallaxTriggers = [];
+}
+
+function wrapParallaxMedia(img) {
+  if (img.parentElement?.classList.contains('parallax-media')) {
+    return img;
+  }
+
+  const wrap = document.createElement('div');
+  wrap.className = 'parallax-media';
+  img.parentNode.insertBefore(wrap, img);
+  wrap.appendChild(img);
+  return img;
+}
+
+function addImageParallax(target, options) {
+  const tween = gsap.fromTo(
+    target,
+    { yPercent: options.from },
+    {
+      yPercent: options.to,
+      ease: 'none',
+      force3D: true,
+      scrollTrigger: {
+        trigger: options.trigger,
+        start: options.start,
+        end: options.end,
+        scrub: options.scrub ?? 0.5,
+        invalidateOnRefresh: true,
+      },
+    }
+  );
+
+  imageParallaxTriggers.push(tween.scrollTrigger);
+}
+
+function initAboutImageParallax() {
+  const aboutSection = document.querySelector('.about-section');
+  const aboutPhoto = document.querySelector('.about-photo');
+  if (!aboutSection || !aboutPhoto) return;
+
+  addImageParallax(aboutPhoto, {
+    from: -8,
+    to: 10,
+    trigger: aboutSection,
+    start: 'top bottom',
+    end: 'bottom top',
+    scrub: 0.5,
+  });
+}
+
+function initHomeImageParallax() {
+  const heroShell = document.querySelector('.hero-shell');
+  if (heroShell) {
+    document.querySelectorAll('.hero-carousel-slide img').forEach((img) => {
+      addImageParallax(img, {
+        from: -8,
+        to: 12,
+        trigger: heroShell,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.35,
+      });
+    });
+  }
+
+  document.querySelectorAll('.service-card-media img').forEach((img) => {
+    wrapParallaxMedia(img);
+    const card = img.closest('.service-card');
+    if (!card) return;
+
+    addImageParallax(img, {
+      from: -10,
+      to: 10,
+      trigger: card,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 0.6,
+    });
+  });
+
+  const productsBanner = document.querySelector('.products-banner');
+  const productsImg = productsBanner?.querySelector(':scope > img');
+  if (productsBanner && productsImg) {
+    wrapParallaxMedia(productsImg);
+
+    addImageParallax(productsImg, {
+      from: -12,
+      to: 12,
+      trigger: productsBanner,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 0.5,
+    });
+  }
+
+  document.querySelectorAll('.blog-card-image').forEach((img) => {
+    wrapParallaxMedia(img);
+    const card = img.closest('.blog-card');
+    if (!card) return;
+
+    addImageParallax(img, {
+      from: -8,
+      to: 8,
+      trigger: card,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 0.45,
+    });
+  });
+
+}
+
+function initImageParallax() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  killImageParallax();
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (document.body.classList.contains('page-home')) {
+    initHomeImageParallax();
+  }
+
+  if (document.body.classList.contains('page-about')) {
+    initAboutImageParallax();
+  }
+
+  ScrollTrigger.refresh();
 }
 
 /* ==========================================================================
@@ -538,11 +743,13 @@ function initPartnersMarquee() {
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initLenis();
   initHeroCarousel();
   initMobileMenu();
   initSmoothScroll();
   initNavHighlighting();
   initScrollReveal();
   initServicesStackAnimation();
+  initImageParallax();
   initPartnersMarquee();
 });

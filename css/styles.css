@@ -3,8 +3,28 @@
    ========================================================================== */
 
 html {
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 body {
@@ -132,9 +152,10 @@ ul {
 
 .hero-carousel-slide img {
   width: 100%;
-  height: 100%;
+  height: 115%;
   object-fit: cover;
   object-position: center;
+  will-change: transform;
 }
 
 .hero-overlay {
@@ -414,12 +435,13 @@ body.menu-open {
   right: calc(-1 * var(--about-photo-crop));
   flex-shrink: 0;
   width: var(--about-photo-size);
-  height: var(--about-photo-size);
+  height: calc(var(--about-photo-size) * 1.15);
   display: block;
   border-radius: 50%;
   object-fit: cover;
   object-position: center;
   user-select: none;
+  will-change: transform;
 }
 
 @media (min-width: 1025px) {
@@ -660,6 +682,10 @@ body.menu-open {
   border-radius: clamp(16px, 2vw, 24px);
   border: 1px solid #2b2b2b;
   background: #fff;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .service-card-inner {
@@ -714,16 +740,28 @@ body.menu-open {
   display: flex;
   align-self: stretch;
   min-height: 0;
+  overflow: hidden;
   padding: clamp(14px, 1.6vw, 18px) clamp(14px, 1.6vw, 18px) clamp(14px, 1.6vw, 18px) 0;
+}
+
+.service-card-media .parallax-media {
+  width: 100%;
+  min-height: clamp(200px, 28vw, 304px);
+  border-radius: clamp(12px, 1.5vw, 18px);
+  overflow: hidden;
 }
 
 .service-card-media img {
   width: 100%;
-  height: 100%;
-  min-height: clamp(200px, 28vw, 304px);
-  border-radius: clamp(12px, 1.5vw, 18px);
+  height: 115%;
   object-fit: cover;
   object-position: center;
+  will-change: transform;
+}
+
+.service-card-media > img {
+  min-height: clamp(200px, 28vw, 304px);
+  border-radius: clamp(12px, 1.5vw, 18px);
 }
 
 /* ==========================================================================
@@ -766,14 +804,21 @@ body.menu-open {
   grid-template-columns: 1fr;
 }
 
+.blog-card .parallax-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .blog-card-image {
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 100%;
+  height: 115%;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .blog-card::after {
@@ -804,7 +849,7 @@ body.menu-open {
     transform: translateY(-8px);
   }
 
-  .blog-card:hover .blog-card-image {
+  .blog-card:hover .parallax-media {
     transform: scale(1.04);
   }
 }
@@ -876,6 +921,20 @@ body.menu-open {
 
 .products-banner {
   min-height: clamp(320px, 40vw, 420px);
+}
+
+.products-banner > .parallax-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.products-banner .parallax-media img {
+  width: 100%;
+  height: 115%;
+  object-fit: cover;
+  object-position: center;
+  will-change: transform;
 }
 
 .products-banner-overlay {
@@ -1301,7 +1360,7 @@ body.menu-open {
     padding: 12px 12px 0;
   }
 
-  .service-card-media img {
+  .service-card-media .parallax-media {
     min-height: clamp(180px, 40vw, 220px);
   }
 
@@ -1449,10 +1508,6 @@ body.menu-open {
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   .btn-primary,
   .blog-card,
   .hero-carousel-track,
@@ -1461,6 +1516,19 @@ body.menu-open {
   .partners-marquee-track {
     transition: none;
     animation: none;
+  }
+
+  .hero-carousel-slide img,
+  .service-card-media img,
+  .blog-card-image,
+  .products-banner .parallax-media img,
+  .about-section .about-photo {
+    height: 100%;
+    will-change: auto;
+  }
+
+  .about-section .about-photo {
+    height: var(--about-photo-size);
   }
 
   .service-card-wrapper {
