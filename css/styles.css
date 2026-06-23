@@ -339,9 +339,25 @@ body.menu-open {
 
 .about-section {
   position: relative;
-  overflow: hidden;
+  --about-photo-size: clamp(440px, 38vw, 720px);
+  --about-photo-crop: clamp(3rem, 10vw, 7.5rem);
+  min-height: calc(var(--about-photo-size) + clamp(4.75rem, 8vw, 8.5rem));
   padding-top: clamp(1.75rem, 4vw, 3.5rem);
   padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.about-photo-wrap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(var(--about-photo-size) + var(--about-photo-crop));
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .about-section > .container-main {
@@ -394,20 +410,25 @@ body.menu-open {
 }
 
 .about-section .about-photo {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: clamp(420px, 36vw, 780px);
-  height: fit-content;
-  max-height: min(88vh, 820px);
-  margin-top: auto;
-  margin-bottom: auto;
-  z-index: 0;
+  position: relative;
+  right: calc(-1 * var(--about-photo-crop));
+  flex-shrink: 0;
+  width: var(--about-photo-size);
+  height: var(--about-photo-size);
   display: block;
-  border-radius: clamp(10px, 1.5vw, 16px);
-  object-fit: contain;
-  object-position: center right;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+}
+
+@media (min-width: 1025px) {
+  .page-about .about-name,
+  .page-about .partners-title,
+  .page-about .team-title,
+  .page-about .footer-connect-title {
+    font-size: clamp(2rem, 2.5vw, 48px);
+  }
 }
 
 .partners-section {
@@ -1046,6 +1067,18 @@ body.menu-open {
   .hero-panel {
     min-height: 600px;
   }
+
+  .about-section {
+    --about-photo-size: 720px;
+    --about-photo-crop: clamp(5rem, 9vw, 14rem);
+  }
+}
+
+@media (min-width: 1920px) {
+  .about-section {
+    --about-photo-size: 720px;
+    --about-photo-crop: clamp(1rem, 1vw, 18rem);
+  }
 }
 
 /* ==========================================================================
@@ -1091,12 +1124,42 @@ body.menu-open {
     gap: 1rem 2rem;
   }
 
+  .about-section {
+    --about-photo-size: clamp(380px, 42vw, 600px);
+    --about-photo-crop: clamp(2.5rem, 9vw, 5.5rem);
+    min-height: 0;
+  }
+
   .about-layout {
-    max-width: min(100%, 56%);
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.875rem, 2vw, 1.25rem);
+  }
+
+  .about-photo-wrap {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    width: var(--about-photo-size);
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    pointer-events: auto;
   }
 
   .about-section .about-photo {
-    width: clamp(360px, 48vw, 680px);
+    right: 0;
+  }
+
+  .about-subtitle {
+    margin-bottom: 0;
   }
 
   .service-card-inner {
@@ -1121,13 +1184,9 @@ body.menu-open {
    ========================================================================== */
 
 @media (max-width: 860px) {
-  .about-layout {
-    max-width: min(100%, 58%);
-  }
-
-  .about-section .about-photo {
-    width: clamp(320px, 46vw, 560px);
-    max-height: min(80vh, 680px);
+  .about-section {
+    --about-photo-size: clamp(340px, 46vw, 520px);
+    --about-photo-crop: clamp(2rem, 8vw, 4.5rem);
   }
 }
 
@@ -1136,19 +1195,9 @@ body.menu-open {
    ========================================================================== */
 
 @media (max-width: 768px) {
-  .about-layout {
-    max-width: 100%;
-  }
-
-  .about-section .about-photo {
-    position: static;
-    width: min(100%, 420px);
-    max-height: clamp(320px, 65vw, 480px);
-    margin-top: clamp(0.5rem, 2vw, 1rem);
-    margin-bottom: clamp(0.75rem, 2.5vw, 1.25rem);
-    margin-left: auto;
-    margin-right: 0;
-    object-position: center;
+  .about-section {
+    --about-photo-size: clamp(280px, 62vw, 440px);
+    --about-photo-crop: clamp(1.25rem, 7vw, 3rem);
   }
 
   .about-name {
@@ -1157,7 +1206,6 @@ body.menu-open {
 
   .about-subtitle {
     font-size: clamp(0.875rem, 3.5vw, 1rem);
-    margin-bottom: 0.875rem;
   }
 
   .partners-inner {
@@ -1277,10 +1325,9 @@ body.menu-open {
    ========================================================================== */
 
 @media (max-width: 480px) {
-  .about-section .about-photo {
-    width: min(100%, 360px);
-    max-height: clamp(280px, 70vw, 400px);
-    border-radius: 10px;
+  .about-section {
+    --about-photo-size: clamp(240px, 68vw, 380px);
+    --about-photo-crop: clamp(0.75rem, 5.5vw, 2rem);
   }
 
   .about-name {

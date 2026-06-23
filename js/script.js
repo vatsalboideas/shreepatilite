@@ -243,16 +243,19 @@ function initScrollReveal() {
 
     markReveal(section.querySelector('.about-title'), delay);
     delay += 100;
-    markReveal(section.querySelector('.about-subtitle'), delay);
+    markReveal(section.querySelector('.about-name'), delay);
     delay += 80;
-    markReveal(section.querySelector('.about-body'), delay);
-    delay += 100;
 
     const photo = section.querySelector('.about-photo');
     if (photo) {
       photo.classList.add('reveal--from-right');
       markReveal(photo, delay);
     }
+    delay += 100;
+
+    markReveal(section.querySelector('.about-subtitle'), delay);
+    delay += 80;
+    markReveal(section.querySelector('.about-body'), delay);
 
     registerGroup(section, true);
   }
