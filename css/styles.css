@@ -664,37 +664,46 @@ body.menu-open {
 
 .service-card-inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   align-items: stretch;
   min-height: clamp(280px, 32vw, 340px);
 }
 
 .service-card-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  align-items: center;
+  column-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  row-gap: clamp(0.75rem, 1.2vw, 1rem);
   min-width: 0;
   padding: clamp(1.5rem, 3.5vw, 2.75rem) clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 3.5vw, 2.75rem)
     clamp(1.5rem, 4vw, 3.25rem);
 }
 
 .service-card-number {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 128px;
   line-height: 1;
   font-weight: 700;
   color: #4a2328;
 }
 
 .service-card-title {
-  margin-bottom: 0.75rem;
-  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
-  font-weight: 700;
-  color: #4a2328;
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 400;
+  color: #000;
 }
 
 .service-card-text {
+  grid-column: 1 / -1;
+  grid-row: 2;
   max-width: none;
   font-size: clamp(0.8125rem, 1.2vw, 0.875rem);
   line-height: 1.7;
@@ -1163,7 +1172,7 @@ body.menu-open {
   }
 
   .service-card-inner {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
   }
 
   .team-grid {
@@ -1351,10 +1360,6 @@ body.menu-open {
 
   .hero-panel {
     min-height: clamp(320px, 58vh, 400px);
-  }
-
-  .service-card-number {
-    font-size: 2.5rem;
   }
 
   .nav-links a {

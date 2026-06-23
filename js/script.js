@@ -10,7 +10,6 @@ let servicesScrollTriggers = [];
 /** Debounce timer for rebuilding services animations after viewport changes. */
 let servicesResizeTimer;
 
-
 /* ==========================================================================
    Shared Utilities
    ========================================================================== */
@@ -41,7 +40,6 @@ function getLinkPage(href) {
   return path.split('/').pop() || 'index.html';
 }
 
-
 /* ==========================================================================
    Hero Carousel
    ========================================================================== */
@@ -53,7 +51,9 @@ function initHeroCarousel() {
   const heroPanel = carousel.closest('.hero-panel');
   const track = carousel.querySelector('.hero-carousel-track');
   const slides = [...carousel.querySelectorAll('.hero-carousel-slide')];
-  const indicators = [...(heroPanel || carousel).querySelectorAll('[data-hero-carousel-indicator]')];
+  const indicators = [
+    ...(heroPanel || carousel).querySelectorAll('[data-hero-carousel-indicator]'),
+  ];
   const prevBtn = (heroPanel || carousel).querySelector('[data-hero-carousel-prev]');
   const nextBtn = (heroPanel || carousel).querySelector('[data-hero-carousel-next]');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -110,7 +110,6 @@ function initHeroCarousel() {
   startAutoplay();
 }
 
-
 /* ==========================================================================
    Mobile Menu
    ========================================================================== */
@@ -144,7 +143,6 @@ function initMobileMenu() {
   });
 }
 
-
 /* ==========================================================================
    Smooth Scroll
    ========================================================================== */
@@ -165,7 +163,6 @@ function initSmoothScroll() {
     });
   });
 }
-
 
 /* ==========================================================================
    Navigation Highlighting
@@ -202,9 +199,7 @@ function initNavHighlighting() {
     if (aboutLink) setActive(aboutLink);
     return;
   }
-
 }
-
 
 /* ==========================================================================
    Scroll Reveal Animations
@@ -369,7 +364,6 @@ function initScrollReveal() {
   });
 }
 
-
 /* ==========================================================================
    Services Stack (GSAP / ScrollTrigger)
    ========================================================================== */
@@ -441,8 +435,8 @@ function setupServicesStack() {
     const rotation = isLast ? 0 : -10;
 
     const cardTween = gsap.to(card, {
-      scale,
-      rotationX: rotation,
+      // scale,
+      // rotationX: rotation,
       transformOrigin: 'top center',
       ease: 'none',
       scrollTrigger: {
@@ -477,7 +471,6 @@ function initServicesStackAnimation() {
   window.addEventListener('resize', () => scheduleServicesRefresh(200));
   window.addEventListener('orientationchange', () => scheduleServicesRefresh(300));
 }
-
 
 /* ==========================================================================
    Partners Marquee
@@ -539,7 +532,6 @@ function initPartnersMarquee() {
     resizeTimer = setTimeout(renderMarquee, 200);
   });
 }
-
 
 /* ==========================================================================
    Bootstrap
