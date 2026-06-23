@@ -173,6 +173,7 @@ function initSmoothScroll() {
 
 function initNavHighlighting() {
   const navLinks = document.querySelectorAll('.nav-links a');
+  const navCta = document.querySelector('.nav-cta');
   if (!navLinks.length) return;
 
   const currentPage = getCurrentPageName();
@@ -183,6 +184,10 @@ function initNavHighlighting() {
       link.classList.remove('nav-link-active');
       link.removeAttribute('aria-current');
     });
+    if (navCta) {
+      navCta.classList.remove('nav-link-active');
+      navCta.removeAttribute('aria-current');
+    }
   }
 
   function setActive(link, ariaValue = 'page') {
@@ -198,51 +203,6 @@ function initNavHighlighting() {
     return;
   }
 
-  if (!isHomePage) return;
-
-  // Home page: highlight section links while scrolling
-  const sectionLinks = [...navLinks].filter((link) => {
-    const href = link.getAttribute('href') || '';
-    return getLinkHash(href) && getLinkPage(href) === 'index.html';
-  });
-
-  const sections = sectionLinks
-    .map((link) => {
-      const id = getLinkHash(link.getAttribute('href')).slice(1);
-      const el = document.getElementById(id);
-      return el ? { link, el } : null;
-    })
-    .filter(Boolean);
-
-  if (!sections.length) return;
-
-  function updateFromScroll() {
-    const offset = getStickyHeaderOffset(48);
-    const scrollPos = window.scrollY + offset;
-    let activeSection = null;
-
-    sections.forEach((section) => {
-      if (section.el.offsetTop <= scrollPos) {
-        activeSection = section;
-      }
-    });
-
-    if (!activeSection || window.scrollY < 80) {
-      clearActive();
-      return;
-    }
-
-    setActive(activeSection.link, 'true');
-  }
-
-  const initialHash = window.location.hash;
-  if (initialHash) {
-    const hashLink = sectionLinks.find((link) => getLinkHash(link.getAttribute('href')) === initialHash);
-    if (hashLink) setActive(hashLink, 'true');
-  }
-
-  window.addEventListener('scroll', updateFromScroll, { passive: true });
-  updateFromScroll();
 }
 
 
@@ -288,10 +248,10 @@ function initScrollReveal() {
     markReveal(section.querySelector('.about-body'), delay);
     delay += 100;
 
-    const media = section.querySelector('.about-media');
-    if (media) {
-      media.classList.add('reveal--from-right');
-      markReveal(media, delay);
+    const photo = section.querySelector('.about-photo');
+    if (photo) {
+      photo.classList.add('reveal--from-right');
+      markReveal(photo, delay);
     }
 
     registerGroup(section, true);
@@ -517,6 +477,68 @@ function initServicesStackAnimation() {
 
 
 /* ==========================================================================
+   Partners Marquee
+   ========================================================================== */
+
+function initPartnersMarquee() {
+  const marquee = document.querySelector('.partners-marquee');
+  if (!marquee) return;
+
+  const track = marquee.querySelector('.partners-marquee-track');
+  const sourceSet = track?.querySelector('.partners-marquee-set');
+  if (!track || !sourceSet) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const originalItems = [...sourceSet.children].map((node) => node.cloneNode(true));
+  const MARQUEE_SPEED = 45; // pixels per second
+  let resizeTimer;
+
+  function renderMarquee() {
+    track.textContent = '';
+    track.classList.remove('is-animating');
+    track.style.removeProperty('--marquee-distance');
+    track.style.removeProperty('--marquee-duration');
+    marquee.classList.remove('is-ready', 'is-static');
+
+    const primarySet = document.createElement('div');
+    primarySet.className = 'partners-marquee-set';
+    originalItems.forEach((item) => primarySet.appendChild(item.cloneNode(true)));
+    track.appendChild(primarySet);
+
+    const minWidth = marquee.offsetWidth + 1;
+    while (primarySet.scrollWidth < minWidth) {
+      originalItems.forEach((item) => primarySet.appendChild(item.cloneNode(true)));
+    }
+
+    if (prefersReducedMotion) {
+      marquee.classList.add('is-ready', 'is-static');
+      return;
+    }
+
+    const loopSet = primarySet.cloneNode(true);
+    loopSet.setAttribute('aria-hidden', 'true');
+    loopSet.querySelectorAll('img').forEach((img) => img.setAttribute('alt', ''));
+    track.appendChild(loopSet);
+
+    const distance = primarySet.getBoundingClientRect().width;
+    const duration = Math.max(distance / MARQUEE_SPEED, 20);
+
+    track.style.setProperty('--marquee-distance', `-${distance}px`);
+    track.style.setProperty('--marquee-duration', `${duration}s`);
+    track.classList.add('is-animating');
+    marquee.classList.add('is-ready');
+  }
+
+  renderMarquee();
+
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(renderMarquee, 200);
+  });
+}
+
+
+/* ==========================================================================
    Bootstrap
    ========================================================================== */
 
@@ -527,4 +549,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavHighlighting();
   initScrollReveal();
   initServicesStackAnimation();
+  initPartnersMarquee();
 });
