@@ -494,13 +494,18 @@ function setupServicesStack() {
   cardsWrappers.forEach((wrapper, i) => {
     const card = cards[i];
     const isLast = i === cards.length - 1;
-    const scale = isLast ? 1 : 0.9 + 0.025 * i;
+    const scale = 0.8 + 0.025 * i;
+    // const scale = isLast ? 1 : 0.9 + 0.025 * i;
+    // const rotation = -10;
     const rotation = isLast ? 0 : -10;
 
     gsap.set(wrapper, { zIndex: i + 1 });
     gsap.set(card, { zIndex: i + 1, force3D: true, transformOrigin: 'top center' });
 
     const cardTween = gsap.to(card, {
+      scale,
+      rotationX: rotation,
+      force3D: true,
       ease: 'none',
       scrollTrigger: {
         trigger: wrapper,
@@ -641,7 +646,6 @@ function initHomeImageParallax() {
       scrub: 0.45,
     });
   });
-
 }
 
 function initImageParallax() {
