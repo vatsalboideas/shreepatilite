@@ -612,21 +612,6 @@ function initHomeImageParallax() {
     });
   }
 
-  document.querySelectorAll('.service-card-media img').forEach((img) => {
-    wrapParallaxMedia(img);
-    const card = img.closest('.service-card');
-    if (!card) return;
-
-    addImageParallax(img, {
-      from: -10,
-      to: 10,
-      trigger: card,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 0.6,
-    });
-  });
-
   const productsBanner = document.querySelector('.products-banner');
   const productsImg = productsBanner?.querySelector(':scope > img');
   if (productsBanner && productsImg) {

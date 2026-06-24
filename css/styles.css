@@ -345,6 +345,36 @@ body.menu-open {
   overflow: hidden;
 }
 
+@media (max-width: 767px) {
+  body.menu-open .hero-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    width: 100%;
+  }
+
+  .hero-nav.open {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .hero-nav.open .nav-menu {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    order: 3;
+    width: 100%;
+    flex-basis: 100%;
+    padding: 1.25rem 1.25rem 1rem;
+    border-radius: 0 0 20px 20px;
+    background: #fff;
+  }
+}
+
 /* ==========================================================================
    About Page
    ========================================================================== */
@@ -744,23 +774,12 @@ body.menu-open {
   padding: clamp(14px, 1.6vw, 18px) clamp(14px, 1.6vw, 18px) clamp(14px, 1.6vw, 18px) 0;
 }
 
-.service-card-media .parallax-media {
-  width: 100%;
-  min-height: clamp(200px, 28vw, 304px);
-  border-radius: clamp(12px, 1.5vw, 18px);
-  overflow: hidden;
-}
-
 .service-card-media img {
   width: 100%;
-  height: 115%;
+  height: 100%;
+  min-height: clamp(200px, 28vw, 304px);
   object-fit: cover;
   object-position: center;
-  will-change: transform;
-}
-
-.service-card-media > img {
-  min-height: clamp(200px, 28vw, 304px);
   border-radius: clamp(12px, 1.5vw, 18px);
 }
 
@@ -1360,7 +1379,7 @@ body.menu-open {
     padding: 12px 12px 0;
   }
 
-  .service-card-media .parallax-media {
+  .service-card-media img {
     min-height: clamp(180px, 40vw, 220px);
   }
 
@@ -1385,6 +1404,14 @@ body.menu-open {
 
   .section-title {
     margin-bottom: 2rem;
+  }
+
+  .page-home #services.section-padding {
+    padding-bottom: clamp(5rem, 14vw, 7.5rem);
+  }
+
+  .page-home #investors.section-padding {
+    padding-top: clamp(4rem, 12vw, 6rem);
   }
 }
 
@@ -1519,7 +1546,6 @@ body.menu-open {
   }
 
   .hero-carousel-slide img,
-  .service-card-media img,
   .blog-card-image,
   .products-banner .parallax-media img,
   .about-section .about-photo {
