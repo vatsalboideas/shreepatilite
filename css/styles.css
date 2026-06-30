@@ -384,6 +384,243 @@ body.menu-open {
   background-color: #471e27;
 }
 
+.page-investors {
+  background-color: #471e27;
+}
+
+.investors-main {
+  padding-top: 0;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+  margin-top: clamp(-40px, -4vw, -24px);
+}
+
+.investors-hero-frame {
+  border-radius: clamp(20px, 2.5vw, 28px);
+}
+
+.investors-hero-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: clamp(20px, 2.5vw, 28px);
+  min-height: clamp(360px, 56vw, 560px);
+}
+
+.investors-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.investors-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(246, 225, 196, 0.82) 0%,
+    rgba(246, 225, 196, 0.5) 36%,
+    rgba(246, 225, 196, 0.05) 72%,
+    rgba(246, 225, 196, 0) 100%
+  );
+}
+
+.investors-hero-content {
+  position: absolute;
+  left: clamp(1rem, 4vw, 2.25rem);
+  right: clamp(1rem, 4vw, 2.25rem);
+  top: 50%;
+  width: auto;
+  transform: translateY(-50%);
+  z-index: 2;
+  text-align: left;
+}
+
+.investors-hero-content h1 {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(2rem, 7vw, 4rem);
+  line-height: 1.05;
+  font-weight: 700;
+}
+
+.investors-hero-content h1 span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: clamp(1.15rem, 3vw, 2.5rem);
+  line-height: 1.15;
+}
+
+.investors-timeline-section {
+  margin-top: clamp(1.25rem, 3vw, 2.25rem);
+  padding-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.investors-timeline-scroll-wrapper {
+  width: 100%;
+}
+
+.investors-timeline-card {
+  border-radius: clamp(20px, 2.5vw, 28px);
+  background: #e7e5dc;
+  padding: clamp(1.125rem, 2.8vw, 2rem);
+}
+
+.investors-timeline-card--combined {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 3vw, 2.2rem);
+}
+
+.investors-timeline-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(1rem, 2.5vw, 2rem);
+  align-items: center;
+}
+
+.investors-timeline-card--combined .investors-timeline-item + .investors-timeline-item {
+  border-top: 1px solid rgba(74, 21, 27, 0.15);
+  padding-top: clamp(1.25rem, 2.8vw, 2rem);
+}
+
+.investors-timeline-content {
+  position: relative;
+  padding-left: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.investors-timeline-line {
+  position: absolute;
+  left: 0;
+  top: clamp(0.45rem, 1vw, 0.7rem);
+  bottom: clamp(0.25rem, 0.8vw, 0.5rem);
+  border-left: 1px dotted rgba(74, 21, 27, 0.28);
+}
+
+.investors-timeline-line::before {
+  content: '';
+  position: absolute;
+  left: -0.3rem;
+  top: 0;
+  width: clamp(0.48rem, 0.9vw, 0.62rem);
+  height: clamp(0.48rem, 0.9vw, 0.62rem);
+  background: #4a151b;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+.investors-timeline-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.6rem, 1.4vw, 0.95rem);
+}
+
+.investors-timeline-content h2 {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  line-height: 1.05;
+  font-weight: 700;
+}
+
+.investors-timeline-content h3 {
+  margin: clamp(0.35rem, 1.2vw, 0.55rem) 0 0;
+  color: #3a1015;
+  font-size: clamp(1.35rem, 2.6vw, 2.15rem);
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.investors-timeline-content p {
+  margin: clamp(1rem, 2.4vw, 1.6rem) 0 0;
+  max-width: 54ch;
+  color: #2a2a2a;
+  font-size: clamp(0.95rem, 1.05vw, 1.28rem);
+  line-height: 1.45;
+}
+
+.investors-timeline-media img {
+  width: 100%;
+  aspect-ratio: 1.55;
+  object-fit: cover;
+  border-radius: clamp(16px, 2vw, 24px);
+}
+
+.investors-healthcare-section {
+  padding-top: clamp(0.5rem, 2vw, 1.25rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.investors-healthcare-title {
+  margin: 0 0 clamp(1.5rem, 4vw, 2.75rem);
+  text-align: center;
+  color: #fff;
+  font-size: clamp(1.75rem, 4.2vw, 3rem);
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.investors-healthcare-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(0.5rem, 1.1vw, 0.85rem);
+}
+
+.investors-healthcare-card {
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(300px, 30vw, 390px);
+  border-radius: clamp(16px, 2vw, 22px);
+  overflow: hidden;
+}
+
+.investors-healthcare-card-icon {
+  flex: 1 1 52%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e7e5dc;
+  padding: clamp(1rem, 2.2vw, 1.75rem) clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.investors-healthcare-card-icon img {
+  width: clamp(3.25rem, 7.5vw, 5.5rem);
+  height: auto;
+  object-fit: contain;
+}
+
+.investors-healthcare-card-body {
+  flex: 1 1 48%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.35rem, 0.8vw, 0.55rem);
+  background: #fff;
+  padding: clamp(0.85rem, 1.8vw, 1.35rem) clamp(0.65rem, 1.4vw, 1rem);
+  text-align: center;
+}
+
+.investors-healthcare-card-body h3 {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(0.72rem, 1.05vw, 0.95rem);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.investors-healthcare-card-body p {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(0.64rem, 0.92vw, 0.82rem);
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+@media (max-width: 1200px) {
+  .investors-healthcare-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .page-about main > .team-section:last-of-type {
   padding-bottom: calc(clamp(2.5rem, 5vw, 4rem) + var(--footer-pull-up));
 }
@@ -581,7 +818,7 @@ body.menu-open {
 .team-section {
   padding-top: clamp(2rem, 4vw, 3rem);
   padding-bottom: clamp(2.5rem, 5vw, 4rem);
-  background-color: #fff;
+  background-color: #e6e3d8;
 }
 
 .team-section + .team-section {
@@ -1413,6 +1650,32 @@ body.menu-open {
   .page-home #investors.section-padding {
     padding-top: clamp(4rem, 12vw, 6rem);
   }
+
+  .investors-timeline-item {
+    grid-template-columns: 1fr;
+  }
+
+  .investors-timeline-content {
+    order: 2;
+    padding-left: 0;
+  }
+
+  .investors-timeline-line {
+    display: none;
+  }
+
+  .investors-timeline-media {
+    order: 1;
+  }
+
+  .investors-healthcare-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.65rem, 2vw, 1rem);
+  }
+
+  .investors-healthcare-card {
+    min-height: clamp(260px, 42vw, 320px);
+  }
 }
 
 /* ==========================================================================
@@ -1442,6 +1705,16 @@ body.menu-open {
 
   .different-item p {
     font-size: 0.72rem;
+  }
+
+  .investors-healthcare-grid {
+    grid-template-columns: 1fr;
+    max-width: 22rem;
+    margin-inline: auto;
+  }
+
+  .investors-healthcare-card {
+    min-height: 0;
   }
 
   .hero-panel {

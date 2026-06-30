@@ -257,6 +257,14 @@ function initNavHighlighting() {
     if (aboutLink) setActive(aboutLink);
     return;
   }
+
+  if (currentPage === 'investors.html') {
+    const investorsLink = [...navLinks].find(
+      (link) => link.getAttribute('href') === 'investors.html'
+    );
+    if (investorsLink) setActive(investorsLink);
+    return;
+  }
 }
 
 /* ==========================================================================
@@ -332,6 +340,36 @@ function initScrollReveal() {
     registerGroup(section);
   }
 
+  function setupInvestorsTimelineSection(section) {
+    section.classList.add('reveal-group');
+
+    const scrollWrapper = section.querySelector('.investors-timeline-scroll-wrapper');
+    if (scrollWrapper) {
+      scrollWrapper.classList.add('reveal--fade-only');
+      markReveal(scrollWrapper, 0);
+    }
+
+    registerGroup(section);
+  }
+
+  function setupInvestorsHealthcareSection(section) {
+    section.classList.add('reveal-group');
+
+    let delay = 0;
+    const title = section.querySelector('.investors-healthcare-title');
+    if (title) {
+      markReveal(title, delay);
+      delay += 100;
+    }
+
+    section.querySelectorAll('.investors-healthcare-card').forEach((card) => {
+      markReveal(card, delay);
+      delay += STAGGER_MS;
+    });
+
+    registerGroup(section);
+  }
+
   function setupGenericSection(section) {
     section.classList.add('reveal-group');
     let delay = 0;
@@ -369,6 +407,16 @@ function initScrollReveal() {
 
     if (section.id === 'services') {
       setupServicesSection(section);
+      return;
+    }
+
+    if (section.classList.contains('investors-timeline-section')) {
+      setupInvestorsTimelineSection(section);
+      return;
+    }
+
+    if (section.classList.contains('investors-healthcare-section')) {
+      setupInvestorsHealthcareSection(section);
       return;
     }
 
