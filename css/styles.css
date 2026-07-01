@@ -466,19 +466,42 @@ body.menu-open {
 }
 
 .investors-timeline-card--combined {
+  padding: clamp(1.125rem, 2.8vw, 2rem);
+  overflow: hidden;
+}
+
+/* Sticks natively to the scroll position (zero JS lag) while its taller parent
+   (.investors-timeline-scroll-wrapper) is scrolled through. */
+.investors-timeline-card--combined.investors-timeline-card--sticky {
+  position: sticky;
+}
+
+.investors-timeline-stack {
+  position: relative;
+  overflow: hidden;
+}
+
+.investors-timeline-stack--static {
   display: flex;
   flex-direction: column;
   gap: clamp(1.25rem, 3vw, 2.2rem);
 }
 
+.investors-timeline-item-wrapper {
+  width: 100%;
+}
+
 .investors-timeline-item {
+  margin: 10px 0;
+
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   gap: clamp(1rem, 2.5vw, 2rem);
   align-items: center;
+  background: #e7e5dc;
 }
 
-.investors-timeline-card--combined .investors-timeline-item + .investors-timeline-item {
+.investors-timeline-stack--static .investors-timeline-item + .investors-timeline-item {
   border-top: 1px solid rgba(74, 21, 27, 0.15);
   padding-top: clamp(1.25rem, 2.8vw, 2rem);
 }
@@ -571,6 +594,11 @@ body.menu-open {
   min-height: clamp(300px, 30vw, 390px);
   border-radius: clamp(16px, 2vw, 22px);
   overflow: hidden;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .investors-healthcare-card-icon {
@@ -579,13 +607,16 @@ body.menu-open {
   align-items: center;
   justify-content: center;
   background: #e7e5dc;
-  padding: clamp(1rem, 2.2vw, 1.75rem) clamp(0.75rem, 1.5vw, 1.25rem);
+  overflow: hidden;
 }
 
 .investors-healthcare-card-icon img {
-  width: clamp(3.25rem, 7.5vw, 5.5rem);
-  height: auto;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  transition: transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .investors-healthcare-card-body {
@@ -618,6 +649,441 @@ body.menu-open {
 @media (max-width: 1200px) {
   .investors-healthcare-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.investors-opportunity-section {
+  margin-top: clamp(0.5rem, 2vw, 1.25rem);
+  padding-top: clamp(2.5rem, 6vw, 4.5rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  background: #f5f2ee;
+}
+
+.investors-opportunity-header {
+  max-width: 52rem;
+  margin: 0 auto clamp(2rem, 4.5vw, 3.25rem);
+  text-align: center;
+}
+
+.investors-opportunity-title {
+  margin: 0 0 clamp(1rem, 2.5vw, 1.5rem);
+  color: #3a1015;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.investors-opportunity-title-line {
+  display: block;
+  font-size: clamp(1.35rem, 3vw, 2.25rem);
+  font-weight: 500;
+}
+
+.investors-opportunity-title-emphasis {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: clamp(1.75rem, 4.2vw, 3rem);
+}
+
+.investors-opportunity-intro {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(0.82rem, 1.2vw, 1rem);
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.investors-opportunity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.investors-opportunity-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: clamp(16px, 2vw, 22px);
+  overflow: hidden;
+  background: #fff;
+  min-height: clamp(320px, 28vw, 420px);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.investors-opportunity-card-media {
+  flex: 1 1 52%;
+  overflow: hidden;
+}
+
+.investors-opportunity-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.investors-opportunity-card-body {
+  flex: 1 1 48%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.35rem, 0.8vw, 0.55rem);
+  padding: clamp(0.85rem, 1.8vw, 1.35rem) clamp(0.85rem, 1.6vw, 1.25rem);
+  text-align: center;
+}
+
+.investors-opportunity-card-body h3 {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(0.78rem, 1.1vw, 1rem);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.investors-opportunity-card-body p {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(0.68rem, 0.95vw, 0.85rem);
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+@media (max-width: 900px) {
+  .investors-opportunity-grid {
+    grid-template-columns: 1fr;
+    max-width: 24rem;
+    margin-inline: auto;
+  }
+
+  .investors-opportunity-card {
+    min-height: 0;
+  }
+}
+
+.investors-medical-tourism-section {
+  padding-top: clamp(2.5rem, 6vw, 4.5rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  background: #471e27;
+}
+
+.investors-medical-tourism-header {
+  max-width: 52rem;
+  margin: 0 auto clamp(2rem, 4.5vw, 3.25rem);
+  text-align: center;
+}
+
+.investors-medical-tourism-title {
+  margin: 0 0 clamp(1rem, 2.5vw, 1.5rem);
+  color: #fff;
+  font-size: clamp(1.75rem, 4.2vw, 3rem);
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.investors-medical-tourism-intro {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(0.82rem, 1.2vw, 1rem);
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.investors-medical-tourism-slider-wrap {
+  width: 100%;
+  overflow: hidden;
+  padding-block: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.investors-medical-tourism-swiper {
+  overflow: visible;
+  padding-block: clamp(1rem, 3vw, 2rem);
+}
+
+.investors-medical-tourism-swiper .swiper-wrapper {
+  align-items: stretch;
+}
+
+.investors-medical-tourism-swiper .swiper-slide {
+  width: clamp(210px, 26vw, 490px);
+  height: auto;
+  display: flex;
+  transition:
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform: scale(0.7);
+  filter: blur(5px);
+  opacity: 0.5;
+  will-change: transform, filter, opacity;
+  backface-visibility: hidden;
+}
+
+.investors-medical-tourism-swiper
+  .swiper-slide:not(.swiper-slide-active, .swiper-slide-prev, .swiper-slide-next) {
+  scale: 0.7;
+}
+
+.investors-medical-tourism-swiper .swiper-slide-prev,
+.investors-medical-tourism-swiper .swiper-slide-next {
+  scale: 0.8;
+  filter: blur(3px);
+  opacity: 0.72;
+}
+
+.investors-medical-tourism-swiper .swiper-slide-active {
+  scale: 1;
+  filter: blur(0);
+  opacity: 1;
+  z-index: 2;
+}
+
+.investors-medical-tourism-card {
+  aspect-ratio: 5/7;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: clamp(400px, 34vw, 490px);
+  border-radius: clamp(16px, 2vw, 22px);
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  transition: box-shadow 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.investors-medical-tourism-card-media {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e7e5dc;
+  aspect-ratio: 10/9;
+}
+
+.investors-medical-tourism-card-media img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .investors-healthcare-card:hover,
+  .investors-opportunity-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(10, 4, 6, 0.2);
+  }
+
+  .investors-healthcare-card:hover .investors-healthcare-card-icon img,
+  .investors-opportunity-card:hover .investors-opportunity-card-media img,
+  .investors-medical-tourism-card:hover .investors-medical-tourism-card-media img {
+    transform: scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .investors-healthcare-card,
+  .investors-opportunity-card,
+  .investors-medical-tourism-card,
+  .investors-healthcare-card-icon img,
+  .investors-opportunity-card-media img,
+  .investors-medical-tourism-card-media img {
+    transition: none;
+  }
+}
+
+.investors-medical-tourism-card-body {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.35rem, 0.8vw, 0.55rem);
+  padding: clamp(1.2rem, 2.5vw, 1.95rem) clamp(1.15rem, 2.3vw, 1.75rem) clamp(1.2rem, 3.5vw, 3.5rem);
+  text-align: center;
+}
+
+.investors-medical-tourism-card-body h3 {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(0.78rem, 1.1vw, 1rem);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.investors-medical-tourism-card-body p {
+  margin: 0;
+  color: #3a1015;
+  font-size: clamp(0.68rem, 0.95vw, 0.85rem);
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+@media (max-width: 640px) {
+  .investors-medical-tourism-swiper .swiper-slide {
+    width: min(78vw, 280px);
+  }
+}
+
+.investors-takeaways-section {
+  padding-top: clamp(2.5rem, 6vw, 4.5rem);
+  padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.investors-takeaways-title {
+  margin: 0 0 clamp(1.5rem, 4vw, 2.75rem);
+  text-align: center;
+  color: #fff;
+  font-size: clamp(1.75rem, 4.2vw, 3rem);
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.investors-takeaways-table-wrap {
+  border-radius: clamp(16px, 2vw, 22px);
+  overflow: hidden;
+  background: #eae6d8;
+}
+
+.investors-takeaways-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  color: #3c2f2f;
+  font-size: clamp(0.72rem, 1.05vw, 0.95rem);
+  line-height: 1.35;
+}
+
+.investors-takeaways-table th,
+.investors-takeaways-table td {
+  padding: clamp(0.85rem, 1.8vw, 1.35rem) clamp(0.65rem, 1.4vw, 1rem);
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(60, 47, 47, 0.12);
+}
+
+.investors-takeaways-table thead th {
+  background: #e2ddc8;
+  color: #3c2f2f;
+  font-size: clamp(0.68rem, 0.95vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(60, 47, 47, 0.18);
+}
+
+.investors-takeaways-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.investors-takeaways-table tbody td {
+  font-weight: 400;
+}
+
+.investors-takeaways-table tbody td:first-child {
+  font-weight: 600;
+}
+
+.investors-growth-chart-section {
+  padding-top: clamp(1.5rem, 4vw, 2.75rem);
+}
+
+.investors-growth-chart-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  align-items: center;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border-radius: clamp(18px, 2.5vw, 28px);
+  background: #eae6d8;
+}
+
+.investors-growth-chart-canvas-wrap {
+  width: min(100%, 340px);
+  margin: 0 auto;
+}
+
+.investors-growth-chart-canvas {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1;
+}
+
+.investors-growth-chart-title {
+  margin: 0 0 clamp(1rem, 2vw, 1.5rem);
+  color: #121212;
+  font-size: clamp(1.25rem, 2.5vw, 2.15rem);
+  line-height: 1.15;
+  font-weight: 700;
+  max-width: 32ch;
+}
+
+.investors-growth-chart-legend {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.investors-growth-chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 34px;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.32);
+  color: #2d2a27;
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.investors-growth-chart-legend-swatch {
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 768px) {
+  .investors-takeaways-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .investors-takeaways-table {
+    min-width: 36rem;
+    table-layout: auto;
+  }
+
+  .investors-growth-chart-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .investors-growth-chart-title {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .investors-growth-chart-legend {
+    width: 100%;
+    max-width: 28rem;
+  }
+
+  .investors-growth-chart-legend-item {
+    justify-content: flex-start;
   }
 }
 
@@ -1653,6 +2119,7 @@ body.menu-open {
 
   .investors-timeline-item {
     grid-template-columns: 1fr;
+    /* margin: 10px 0; */
   }
 
   .investors-timeline-content {

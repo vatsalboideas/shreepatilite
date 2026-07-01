@@ -10,6 +10,12 @@ let servicesScrollTriggers = [];
 /** Debounce timer for rebuilding services animations after viewport changes. */
 let servicesResizeTimer;
 
+/** Active ScrollTrigger instances for the investors timeline stack (cleared on resize). */
+let investorsTimelineScrollTriggers = [];
+
+/** Debounce timer for rebuilding investors timeline animations after viewport changes. */
+let investorsTimelineResizeTimer;
+
 /** Lenis smooth-scroll instance (null when disabled or unavailable). */
 let lenis = null;
 
@@ -370,6 +376,79 @@ function initScrollReveal() {
     registerGroup(section);
   }
 
+  function setupInvestorsOpportunitySection(section) {
+    section.classList.add('reveal-group');
+
+    let delay = 0;
+    const header = section.querySelector('.investors-opportunity-header');
+    if (header) {
+      markReveal(header, delay);
+      delay += 100;
+    }
+
+    section.querySelectorAll('.investors-opportunity-card').forEach((card) => {
+      markReveal(card, delay);
+      delay += STAGGER_MS;
+    });
+
+    registerGroup(section);
+  }
+
+  function setupInvestorsMedicalTourismSection(section) {
+    section.classList.add('reveal-group');
+
+    let delay = 0;
+    const header = section.querySelector('.investors-medical-tourism-header');
+    if (header) {
+      markReveal(header, delay);
+      delay += 100;
+    }
+
+    const sliderWrap = section.querySelector('.investors-medical-tourism-slider-wrap');
+    if (sliderWrap) {
+      markReveal(sliderWrap, delay);
+    }
+
+    registerGroup(section);
+  }
+
+  function setupInvestorsTakeawaysSection(section) {
+    section.classList.add('reveal-group');
+
+    let delay = 0;
+    const title = section.querySelector('.investors-takeaways-title');
+    if (title) {
+      markReveal(title, delay);
+      delay += 100;
+    }
+
+    const tableWrap = section.querySelector('.investors-takeaways-table-wrap');
+    if (tableWrap) {
+      markReveal(tableWrap, delay);
+    }
+
+    registerGroup(section);
+  }
+
+  function setupInvestorsGrowthChartSection(section) {
+    section.classList.add('reveal-group');
+
+    let delay = 0;
+    const card = section.querySelector('.investors-growth-chart-card');
+    if (card) {
+      markReveal(card, delay);
+      delay += 80;
+    }
+
+    const legendItems = section.querySelectorAll('.investors-growth-chart-legend-item');
+    legendItems.forEach((item) => {
+      markReveal(item, delay);
+      delay += 45;
+    });
+
+    registerGroup(section);
+  }
+
   function setupGenericSection(section) {
     section.classList.add('reveal-group');
     let delay = 0;
@@ -417,6 +496,26 @@ function initScrollReveal() {
 
     if (section.classList.contains('investors-healthcare-section')) {
       setupInvestorsHealthcareSection(section);
+      return;
+    }
+
+    if (section.classList.contains('investors-opportunity-section')) {
+      setupInvestorsOpportunitySection(section);
+      return;
+    }
+
+    if (section.classList.contains('investors-medical-tourism-section')) {
+      setupInvestorsMedicalTourismSection(section);
+      return;
+    }
+
+    if (section.classList.contains('investors-takeaways-section')) {
+      setupInvestorsTakeawaysSection(section);
+      return;
+    }
+
+    if (section.classList.contains('investors-growth-chart-section')) {
+      setupInvestorsGrowthChartSection(section);
       return;
     }
 
@@ -588,6 +687,150 @@ function initServicesStackAnimation() {
 
   window.addEventListener('resize', () => scheduleServicesRefresh(200));
   window.addEventListener('orientationchange', () => scheduleServicesRefresh(300));
+}
+
+/* ==========================================================================
+   Investors Timeline Stack (GSAP / ScrollTrigger)
+   ========================================================================== */
+
+function killInvestorsTimelineAnimations() {
+  investorsTimelineScrollTriggers.forEach((st) => st.kill());
+  investorsTimelineScrollTriggers = [];
+
+  const scrollWrapper = document.querySelector('.investors-timeline-scroll-wrapper');
+  const card = document.querySelector('.investors-timeline-card--combined');
+  const stack = document.querySelector('.investors-timeline-stack');
+  const items = document.querySelectorAll('.investors-timeline-item');
+  const wrappers = document.querySelectorAll('.investors-timeline-item-wrapper');
+
+  items.forEach((item) => {
+    gsap.killTweensOf(item);
+    gsap.set(item, { clearProps: 'transform,y,yPercent' });
+  });
+
+  wrappers.forEach((wrapper) => {
+    gsap.set(wrapper, { clearProps: 'position,top,left,width,height' });
+  });
+
+  if (stack) {
+    gsap.set(stack, { clearProps: 'height' });
+    stack.classList.remove('investors-timeline-stack--static');
+  }
+
+  if (card) {
+    card.classList.remove('investors-timeline-card--sticky');
+    gsap.set(card, { clearProps: 'top' });
+  }
+
+  if (scrollWrapper) {
+    gsap.set(scrollWrapper, { clearProps: 'height' });
+  }
+}
+
+function scheduleInvestorsTimelineRefresh(delay = 200) {
+  clearTimeout(investorsTimelineResizeTimer);
+  investorsTimelineResizeTimer = setTimeout(setupInvestorsTimelineStack, delay);
+}
+
+function setupInvestorsTimelineStack() {
+  killInvestorsTimelineAnimations();
+
+  const scrollWrapper = document.querySelector('.investors-timeline-scroll-wrapper');
+  const card = document.querySelector('.investors-timeline-card--combined');
+  const stack = document.querySelector('.investors-timeline-stack');
+  const wrappers = gsap.utils.toArray('.investors-timeline-item-wrapper');
+  const items = gsap.utils.toArray('.investors-timeline-item');
+
+  if (!scrollWrapper || !card || !stack || wrappers.length !== items.length || wrappers.length === 0) {
+    return;
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    stack.classList.add('investors-timeline-stack--static');
+    ScrollTrigger.refresh();
+    return;
+  }
+
+  // Measure the tallest card while items are still in normal flow
+  const maxHeight = Math.max(...items.map((item) => item.offsetHeight));
+
+  // Give the stack an explicit height so absolutely-positioned children have a reference
+  gsap.set(stack, { height: maxHeight });
+
+  // Absolutely layer every wrapper inside the stack
+  wrappers.forEach((wrapper) => {
+    gsap.set(wrapper, { position: 'absolute', top: 0, left: 0, width: '100%', height: maxHeight });
+  });
+
+  // Visible gap between the exiting and entering card while they cross-fade. Using
+  // (maxHeight + gap) as the travel distance instead of exactly maxHeight keeps this gap
+  // perfectly constant throughout the whole transition (the math cancels out at every
+  // scroll progress), rather than only showing a gap at the start/end of the slide.
+  const cardGap = Math.round(Math.min(32, Math.max(16, window.innerWidth * 0.02)));
+  const travel = maxHeight + cardGap;
+
+  // Explicit initial positions — card 1 visible, rest parked below
+  items.forEach((item, i) => gsap.set(item, { y: i === 0 ? 0 : travel }));
+
+  // One tween per card — no property conflicts between tweens, perfectly symmetric in both
+  // scroll directions. First card: 0 → -travel over segment 0. Last card: travel → 0 over
+  // segment n-2. Middle cards span two segments so a single tween (travel → -travel) passes
+  // through 0 (fully visible) exactly at the midpoint, with no handed-off tweens causing seam
+  // flickers.
+  const tl = gsap.timeline({ paused: true });
+  const n = items.length;
+  for (let i = 0; i < n; i++) {
+    const fromY    = i === 0 ? 0 : travel;
+    const toY      = i === n - 1 ? 0 : -travel;
+    const segStart = Math.max(0, i - 1);
+    const segEnd   = Math.min(n - 1, i + 1);
+    const dur      = segEnd - segStart;
+    tl.fromTo(items[i], { y: fromY }, { y: toY, ease: 'none', duration: dur }, segStart);
+  }
+
+  const scrollPerCard = Math.min(window.innerHeight, 700);
+  const extraScroll = scrollPerCard * (items.length - 1);
+  const headerOffset = getStickyHeaderOffset();
+
+  // Parent must be tall enough to give the sticky card room to stay stuck while the
+  // crossfade timeline plays out underneath it. Measured before applying `sticky` (which
+  // doesn't affect box dimensions, but keeping the read before the write is cleaner).
+  const cardHeight = card.offsetHeight;
+  gsap.set(scrollWrapper, { height: cardHeight + extraScroll });
+
+  // Use native CSS `position: sticky` instead of a JS-driven ScrollTrigger pin. Sticky is
+  // handled entirely by the browser's compositor in perfect lockstep with the (Lenis-smoothed)
+  // scroll position — no per-frame JS recalculation, so no lag/drag and no fixed/transform
+  // pin-state edge cases when reversing scroll direction.
+  gsap.set(card, { top: headerOffset });
+  card.classList.add('investors-timeline-card--sticky');
+
+  const st = ScrollTrigger.create({
+    trigger: scrollWrapper,
+    start: () => 'top ' + headerOffset,
+    end: () => '+=' + extraScroll,
+    scrub: true,
+    animation: tl,
+    invalidateOnRefresh: true,
+    id: 'investors-timeline-slide',
+  });
+
+  investorsTimelineScrollTriggers.push(st);
+  ScrollTrigger.refresh();
+}
+
+function initInvestorsTimelineStackAnimation() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
+  if (!document.querySelector('.investors-timeline-scroll-wrapper')) return;
+
+  setupInvestorsTimelineStack();
+
+  window.addEventListener('resize', () => scheduleInvestorsTimelineRefresh(200));
+  window.addEventListener('orientationchange', () => scheduleInvestorsTimelineRefresh(300));
 }
 
 /* ==========================================================================
@@ -776,6 +1019,119 @@ function initPartnersMarquee() {
 }
 
 /* ==========================================================================
+   Investors Medical Tourism Swiper
+   ========================================================================== */
+
+function initInvestorsMedicalTourismSwiper() {
+  const swiperEl = document.querySelector('.investors-medical-tourism-swiper');
+  if (!swiperEl || typeof Swiper === 'undefined') return;
+
+  new Swiper(swiperEl, {
+    slidesPerView: 'auto',
+    centeredSlides: true,
+    spaceBetween: 0,
+    loop: true,
+    grabCursor: true,
+    speed: 600,
+    autoplay: {
+      delay: 5000,
+    },
+    breakpoints: {
+      768: {
+        spaceBetween: 18,
+      },
+      1200: {
+        spaceBetween: 10,
+      },
+    },
+  });
+}
+
+/* ==========================================================================
+   Investors Growth Doughnut Chart
+   ========================================================================== */
+
+function initInvestorsGrowthChart() {
+  const canvas = document.getElementById('investors-growth-chart');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  const legendRoot = document.getElementById('investors-growth-chart-legend');
+  const source = window.investorsGrowthChartData || {};
+
+  const fallbackData = {
+    labels: [
+      'AI-driven Preventive Healthcare',
+      'Cardiac Surgery',
+      'Dental Tourism',
+      'Fertility & IVF',
+      'Genetic Testing & Precision Medicine',
+      'Nutrigenomics & Personalized Nutrition',
+      'Oncology & Cancer Care',
+    ],
+    data: [14, 11, 8, 39, 7, 9, 12],
+    backgroundColor: ['#e07fba', '#128681', '#49bdbe', '#e44cb2', '#2da8ab', '#28a0a3', '#df9ac8'],
+  };
+
+  const labels = source.labels || fallbackData.labels;
+  const chartData = source.data || source.values || source.datasets?.[0]?.data || fallbackData.data;
+  const backgroundColor =
+    source.backgroundColor ||
+    source.colors ||
+    source.datasets?.[0]?.backgroundColor ||
+    fallbackData.backgroundColor;
+
+  const chart = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [
+        {
+          data: chartData,
+          backgroundColor,
+          borderWidth: 0,
+          hoverOffset: 4,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '62%',
+      animation: {
+        duration: 900,
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          enabled: true,
+        },
+      },
+    },
+  });
+
+  if (!legendRoot) return;
+
+  legendRoot.innerHTML = '';
+  chart.data.labels.forEach((label, index) => {
+    const item = document.createElement('li');
+    item.className = 'investors-growth-chart-legend-item';
+
+    const swatch = document.createElement('span');
+    swatch.className = 'investors-growth-chart-legend-swatch';
+    swatch.style.backgroundColor = chart.data.datasets[0].backgroundColor[index];
+
+    const text = document.createElement('span');
+    text.textContent = label;
+
+    item.appendChild(swatch);
+    item.appendChild(text);
+    legendRoot.appendChild(item);
+  });
+}
+
+/* ==========================================================================
    Bootstrap
    ========================================================================== */
 
@@ -787,6 +1143,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavHighlighting();
   initScrollReveal();
   initServicesStackAnimation();
+  initInvestorsTimelineStackAnimation();
   initImageParallax();
   initPartnersMarquee();
+  initInvestorsMedicalTourismSwiper();
+  initInvestorsGrowthChart();
 });
